@@ -1,10 +1,6 @@
 ---
 title: "Lab 03 - Functions and data.table"
-format:
-  html:
-    embed-resources: true
-editor_options: 
-  chunk_output_type: console
+format: gfm
 ---
 
 # Learning goals
@@ -114,12 +110,16 @@ newFunction(1, pi = pi)
 Knit the document, commit your changes, and push them to GitHub.
 
 
-## Question 2: **Lady evaluation**
+## Question 2: **Lazy evaluation**
 
 A concept we did not review was lazy evaluation. Write a function with two arguments (`a` and `b`)  that only uses one of them as an integer, and then call the function passing the following arguments `(1, this_stuff)`
 
 ```{r}
+lazyFunction <- function(a, b) {
+  print(a)
+}
 
+lazyFunction(1, this_stuff)
 ```
 
 Knit the document, commit your changes, and push them to GitHub.
