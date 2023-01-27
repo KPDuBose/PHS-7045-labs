@@ -125,10 +125,10 @@ newFunction(1, pi = pi)
      num 1
      num 3.14
     [[1]]
-    [1] "000001c726892b40"
+    [1] "000002bc85ed1020"
 
     $pi
-    [1] "000001c728b05d78"
+    [1] "000002bc8812bd60"
 
 Knit the document, commit your changes, and push them to GitHub.
 
@@ -156,6 +156,30 @@ Knit the document, commit your changes, and push them to GitHub.
 Write a function that fits a linear regression model and saves the
 result to the global environment using the `assign()` function. The name
 of the output must be passed as a symbol using lazy evaluation.
+
+``` r
+# Create the function
+set.seed(1134)
+linearModelFunction <- function(x, y, name.of = "defaultName") {
+  assign(name.of, lm(y~x), envir = .GlobalEnv)
+}
+
+# Generate random data to do a linear regression on
+x <- runif(15, min = 1, max = 15)
+y <- runif(15, min = 1, max = 15)
+
+# Check to make sure everything ran alright
+linearModelFunction(x, y)
+defaultName
+```
+
+
+    Call:
+    lm(formula = y ~ x)
+
+    Coefficients:
+    (Intercept)            x  
+        7.01215      0.08741  
 
 Knit the document, commit your changes, and push them to GitHub.
 

@@ -130,7 +130,19 @@ Knit the document, commit your changes, and push them to GitHub.
 Write a function that fits a linear regression model and saves the result to the global environment using the `assign()` function. The name of the output must be passed as a symbol using lazy evaluation.
 
 ```{r}
+# Create the function
+set.seed(1134)
+linearModelFunction <- function(x, y, name.of = "defaultName") {
+  assign(name.of, lm(y~x), envir = .GlobalEnv)
+}
 
+# Generate random data to do a linear regression on
+x <- runif(15, min = 1, max = 15)
+y <- runif(15, min = 1, max = 15)
+
+# Check to make sure everything ran alright
+linearModelFunction(x, y)
+defaultName
 ```
 
 Knit the document, commit your changes, and push them to GitHub.
