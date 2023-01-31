@@ -1,6 +1,8 @@
 ---
 title: "Week 4 Notes"
 format: html
+editor_options: 
+  chunk_output_type: console
 ---
 
 # Warm-up Problem
@@ -101,9 +103,17 @@ profvis({
 ```
 
 # Improving on my urn function, just for fun
-```{r, eval=FALSE}
-better.urn <- fuction(b1, y1, b2, y2, numbTimes = 15){
+```{r}
+better.urn <- function(b1, y1, b2, y2, numbTimes = 100000){
 u1 <- b1 + y1
-u2
+u2 <- b2 + y2 + 1
+transfer <- rbinom(n = numbTimes,size = 1, prob = b1 / u1)
+mean(rbinom(n = numbTimes, size = 1, prob = (b2 + transfer)/u2))
 }
+
+better.urn(10, 8, 6, 6)
+
+library(bench)
+bench::mark(better.urn(10, 8, 6, 6), urn.function(10, 8, 6, 6), relative = TRUE, check = FALSE)
+
 ```
