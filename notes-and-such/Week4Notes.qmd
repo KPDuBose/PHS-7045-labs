@@ -1,0 +1,109 @@
+---
+title: "Week 4 Notes"
+format: html
+---
+
+# Warm-up Problem
+The two urn problem:
+
+```{r}
+
+urn.function <- function(urn1Blue, urn1Yellow, urn2Blue, urn2Yellow, N = 100000) {
+  urn1 <- c(rep("B", times = urn1Blue), rep("Y", times = urn1Yellow))
+  urn2 <- c(rep("B", times = urn2Blue), rep("Y", times = urn2Yellow))
+ 
+#transfer  
+  isBlue <- 0
+  for (i in 1:N) {
+    
+    append(urn2, urn1[(runif(1, min = 1, max = length(urn1)))])
+   test <- urn2[(runif(1, min = 1, max = length(urn2)))]
+  if(test == "B"){isBlue = isBlue + 1}
+   else(isBlue = isBlue)
+  }
+ 
+return(isBlue/N)  
+  
+}
+
+urn.function(10, 8, 6, 6)
+
+```
+
+## Things to think about with the practice code
+What can you do to make your code run more efficiently? How can you avoid writing a for loop? 
+
+# Debugging
+Debugging
+: the process of identifying and removing errors from computer hardware or software.
+1. What is your method to organize your files?
+  i) Modular, or top down?
+
+Antibugging
+: Putting in specific things to stop your code from running if there is not a desired outcome
+
+## Interactive debugging
+Run this code in a separate window
+```{r,eval=FALSE}
+f <- function(a) g(a)
+g <- function(b) h(b)
+h <- function(c) i(c)
+i <- function(d) {
+  if (!is.numeric(d)) {
+    stop("`d` must be numeric", call. = FALSE)
+  }
+  d + 10
+}
+
+# Traceback and debug using Rstudio 'Rerun with Debug'
+f("a")
+
+# Enter debugging mode for a function until deactivating debugging mode
+debug(f)
+f("a")
+f("a")
+undebug(f)
+
+# Enter debug mode for a single call
+debugonce(f)
+f("a")
+f("a")
+```
+1. Use "s" to step in side
+2. I think "n" goes to next line or runs the next step
+
+```{r, eval=FALSE}
+View(lm)
+debugonce(lm)
+lm(1:10~1,method = "model.frame")
+```
+## Breakpoints
+You can see some cool stuff with [breakpoints here](https://adv-r.hadley.nz/debugging.html#breakpoints)
+
+# Profiling
+Here we ask ourselves if our code is running fast. The break function runs well for really small times.
+
+## provis
+[provis example](http://rstudio.github.io/profvis/)
+
+Find out where the "bottleneck" is and see how you can change it.
+
+```{r}
+library(profvis)
+
+profvis({
+  data(diamonds, package = "ggplot2")
+
+  plot(price ~ carat, data = diamonds)
+  m <- lm(price ~ carat, data = diamonds)
+  abline(m, col = "red")
+})
+```
+
+# Improving on my urn function, just for fun
+```{r, eval=FALSE}
+better.urn <- fuction(b1, y1, b2, y2, numbTimes = 15){
+u1 <- b1 + y1
+u2
+}
+```
