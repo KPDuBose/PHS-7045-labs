@@ -153,6 +153,9 @@ Knit the document, commit your changes, and push them to GitHub.
 ## Setup in R
 
 1. Load the `data.table` (and the `dtplyr` and `dplyr` packages if you plan to work with those).
+```{r}
+library(data.table)
+```
 
 2. Load the met data from https://raw.githubusercontent.com/USCbiostats/data-science-data/master/02_met/met_all.gz, and the station data. For the latter, you can use the code we used during the lecture to pre-process the stations' data:
 
