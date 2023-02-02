@@ -125,10 +125,10 @@ newFunction(1, pi = pi)
      num 1
      num 3.14
     [[1]]
-    [1] "000002bc85ed1020"
+    [1] "00000224fcfd3fa8"
 
     $pi
-    [1] "000002bc8812bd60"
+    [1] "00000224fd29f948"
 
 Knit the document, commit your changes, and push them to GitHub.
 
@@ -190,16 +190,77 @@ Knit the document, commit your changes, and push them to GitHub.
 1.  Load the `data.table` (and the `dtplyr` and `dplyr` packages if you
     plan to work with those).
 
+``` r
+library(data.table)
+```
+
 2.  Load the met data from
     https://raw.githubusercontent.com/USCbiostats/data-science-data/master/02_met/met_all.gz,
     and the station data. For the latter, you can use the code we used
     during the lecture to pre-process the stations’ data:
 
 ``` r
+# Where are we getting the data from
+met_url <- "https://github.com/USCbiostats/data-science-data/raw/master/02_met/met_all.gz"
+
+# Downloading the data to a tempfile (so it is destroyed afterwards)
+# you can replace this with, for example, your own data:
+# tmp <- tempfile(fileext = ".gz")
+tmp <- "met.gz"
+
+# We sould be downloading this, ONLY IF this was not downloaded already.
+# otherwise is just a waste of time.
+if (!file.exists(tmp)) {
+  download.file(
+    url      = met_url,
+    destfile = tmp,
+    # method   = "libcurl", timeout = 1000 (you may need this option)
+  )
+}
+
+# Reading the data
+dat <- fread(tmp)
+head(dat)
+```
+
+       USAFID  WBAN year month day hour min  lat      lon elev wind.dir wind.dir.qc
+    1: 690150 93121 2019     8   1    0  56 34.3 -116.166  696      220           5
+    2: 690150 93121 2019     8   1    1  56 34.3 -116.166  696      230           5
+    3: 690150 93121 2019     8   1    2  56 34.3 -116.166  696      230           5
+    4: 690150 93121 2019     8   1    3  56 34.3 -116.166  696      210           5
+    5: 690150 93121 2019     8   1    4  56 34.3 -116.166  696      120           5
+    6: 690150 93121 2019     8   1    5  56 34.3 -116.166  696       NA           9
+       wind.type.code wind.sp wind.sp.qc ceiling.ht ceiling.ht.qc ceiling.ht.method
+    1:              N     5.7          5      22000             5                 9
+    2:              N     8.2          5      22000             5                 9
+    3:              N     6.7          5      22000             5                 9
+    4:              N     5.1          5      22000             5                 9
+    5:              N     2.1          5      22000             5                 9
+    6:              C     0.0          5      22000             5                 9
+       sky.cond vis.dist vis.dist.qc vis.var vis.var.qc temp temp.qc dew.point
+    1:        N    16093           5       N          5 37.2       5      10.6
+    2:        N    16093           5       N          5 35.6       5      10.6
+    3:        N    16093           5       N          5 34.4       5       7.2
+    4:        N    16093           5       N          5 33.3       5       5.0
+    5:        N    16093           5       N          5 32.8       5       5.0
+    6:        N    16093           5       N          5 31.1       5       5.6
+       dew.point.qc atm.press atm.press.qc       rh
+    1:            5    1009.9            5 19.88127
+    2:            5    1010.3            5 21.76098
+    3:            5    1010.6            5 18.48212
+    4:            5    1011.6            5 16.88862
+    5:            5    1012.7            5 17.38410
+    6:            5    1012.7            5 20.01540
+
+``` r
 # Download the data
 stations <- fread("ftp://ftp.ncdc.noaa.gov/pub/data/noaa/isd-history.csv")
 stations[, USAF := as.integer(USAF)]
+```
 
+    Warning in eval(jsub, SDenv, parent.frame()): NAs introduced by coercion
+
+``` r
 # Dealing with NAs and 999999
 stations[, USAF   := fifelse(USAF == 999999, NA_integer_, USAF)]
 stations[, CTRY   := fifelse(CTRY == "", NA_character_, CTRY)]
@@ -218,12 +279,35 @@ stations <- stations[n == 1,][, n := NULL]
 
 3.  Merge the data as we did during the lecture.
 
+``` r
+dat <- merge(
+  # Data
+  x     = dat,      
+  y     = stations, 
+  # List of variables to match
+  by.x  = "USAFID",
+  by.y  = "USAF", 
+  # Which obs to keep?
+  all.x = TRUE,      
+  all.y = FALSE
+  )
+
+# head(dat[, list(USAFID, WBAN, STATE)], n = 4)
+```
+
 ## Question 1: Representative station for the US
 
 What is the median station in terms of temperature, wind speed, and
 atmospheric pressure? Look for the three weather stations that best
 represent the continental US using the `quantile()` function. Do these
 three coincide?
+
+``` r
+dat[temp == quantile(temp, probs = 0.50, na.rm = TRUE) & wind.sp == quantile(wind.sp, probs = 0.50, na.rm = TRUE) & atm.press == quantile(atm.press, probs = 0.50, na.rm = TRUE), .(USAFID, STATE, temp, atm.press, wind.sp)]
+```
+
+       USAFID STATE temp atm.press wind.sp
+    1: 722246    FL 23.5    1014.1     2.1
 
 Knit the document, commit your changes, and Save it on GitHub. Don’t
 forget to add `README.md` to the tree, the first time you render it.
