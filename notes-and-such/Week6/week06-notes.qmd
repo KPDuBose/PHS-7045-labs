@@ -1,0 +1,146 @@
+---
+title: "Week 6 Notes"
+subtitle: "High-performance computing and such"
+author: "Kline DuBose"
+format: gfm
+editor_options: 
+  chunk_output_type: console
+---
+
+# Overview
+Two maybe three things about High-Performance computing
+1) Big data
+2) Parallel computing
+3) Compiled code
+
+# Vocab
+Supercomputer
+High Performance Computing (HPC): Multiple machines within a single network.
+High Throughput Computing (HTC): Multiple machines across multiple networks.
+
+# Cores
+How many cores do you have?
+```{r}
+parallel::detectCores()
+```
+
+How many cores does the machine have? that helps with parrallel computing
+
+# What is parallel computing?
+```{r}
+f <- function(n) n*2
+f(1:4)
+```
+Just uses a single core, so it goes f(1) then f(2), etc....
+
+
+If we do it with other cores, then it can run four times as fast. Not always the best idea to always run parallel computing stuff
+
+# When is it a good time to use the parallel computing power?
+When it's vectorized and not dependent on other processes.
+
+# Example 1: Hello world!
+```{r}
+library(parallel)
+cores <- parallel::detectCores()
+cl <- parallel::makePSOCKcluster(cores)
+x <- 20
+
+# 2 Preparing the cluster
+parallel::clusterSetRNGStream(cl, 123) # Equivalent to 'set.seed(123)'
+parallel::clusterExport(cl, "x")
+
+# 3 do the call
+parallel::clusterEvalQ(cl, {paste0("Hello from process #", Sys.getpid(), ". I see x and it is equal to ", x)})
+```
+
+*Note*: This outputs in a list so that is something to consider when you are working with this package
+
+# Example 2: Parallel regressions
+*Problem*: Run multiple regressions for each column of a very wide dataset. Report the \beta coefficients from fitting the following regression models:
+$$
+y = \textbf{X}_i \beta_i + \varepsilon_i, \quad \varepsilon_i \sim N(0, \sigma^2_i)
+$$
+
+$$
+\quad\forall \text{ columns } i \in \{1, ..., 999\}
+$$
+```{r}
+set.seed(131)
+y <- rnorm(500)
+X <- matrix(rnorm(500*999), nrow = 500, dimnames = list(1:500, sprintf("x%03d", 1:999)))
+```
+
+```{r}
+dim(X)
+```
+
+```{r}
+X[1:6, 1:5]
+```
+
+```{r}
+str(y)
+```
+
+```{r}
+ans.stuff <- apply(X = X,
+                   MARGIN = 2, 
+                   FUN = function(x, y) coef(lm(y ~ x)), 
+                   y = y)
+
+ans.stuff[,1:5]
+```
+
+Now let's try doing the parallel things:
+```{r}
+library(parallel)
+cores <- parallel::detectCores()
+cl <- parallel::makePSOCKcluster(cores)
+# parallel::clusterExport(cl, "X", "y")
+
+
+ans.stuff.par <- parApply(cl = cl, 
+                          X = X, 
+                          MARGIN = 2, 
+                          FUN = function(x,y) coef(lm(y~x)),
+                          y = y
+                          )
+ans.stuff.par[, 1:5]
+```
+
+Bench mark this stuff:
+
+```{r}
+library(bench)
+mark(
+  parallel = parApply(cl = cl, 
+                          X = X, 
+                          MARGIN = 2, 
+                          FUN = function(x,y) coef(lm(y~x)),
+                          y = y
+                          ),
+  serial = apply(X = X,
+                   MARGIN = 2, 
+                   FUN = function(x, y) coef(lm(y ~ x)), 
+                   y = y)
+  
+)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
