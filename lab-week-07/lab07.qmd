@@ -1,0 +1,9 @@
+---
+title: "Week 7 lab"
+subtitle: "Building a package"
+author: "Kline DuBose"
+format: gfm
+editor_options: 
+  chunk_output_type: console
+---
+

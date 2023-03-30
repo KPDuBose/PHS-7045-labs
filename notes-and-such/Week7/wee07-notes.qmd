@@ -1,0 +1,35 @@
+---
+title: "Week 7 Notes"
+subtitle: "Building "
+author: "Kline DuBose"
+format: gfm
+editor_options: 
+  chunk_output_type: console
+---
+
+# Overview
+This week will focus on using devtools to build some R packages. This first part will deal with the basics of development.
+
+# Packages we will be using today
+1) *devtools*: package development tools for R
+2) *roxygen2*
+3) others haha
+
+# Benefits of writing an R package
+Easy to share code and look at. It's also already standardized. Makes things reproducible and letting people be able to site your work. 
+This also makes it so that your method that you're writing isn't going to die either.
+CRAN also double checks your code and that it is written correctly.
+
+# R package contains what?
+1) Folders
+  1) R
+  2) tests
+  3) vignettes
+  4) data
+  5) man
+
+2) files
+  1) description
+  2) namespace
+  
+install.packages("Documents/funnypkg_0.1.0.tar.gz", repos = NULL)
