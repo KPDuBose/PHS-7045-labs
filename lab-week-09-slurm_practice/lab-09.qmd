@@ -3,6 +3,8 @@ title: "Week 9 Slurm"
 format: gfm
 ---
 
+# Review of parallel computing
+
 ## Task 1: Alternatives to job arrays
 
 Besides job arrays in Slurm, look for an alternative way of replicating jobs across multiple nodes (hint: There's a type of `parallel::cluster` object we haven't discussed.) There are at least two.
@@ -13,7 +15,13 @@ Besides job arrays in Slurm, look for an alternative way of replicating jobs acr
 
 Your expert opinion has been requested. For each way to parallelize a job, provide: (i) a one-paragraph description, (ii) proposed criteria of when to use it, and (iii) an example of an analysis that could be done with it.
 
-  1) **SIMD** looking at multiple data sets into a single data set. Like a lower level of parallelization. So, like parallelizing within a a core, almost. 
+  1) **SIMD** looking at multiple data sets into a single data set. Like a lower level of parallelization. So, like parallelizing within a a core, almost. (Computing a distance matrix)
   1) At the CPU level, it's like creating a cluster (OpenMP)
   1) At the Node level, it's like making clusters on multiple CPUs? Like a master program and additional "slave" programs. 
   1) Across Nodes it is like running on a bunch of different computers, or working on different things. Like a job array, used for simulating. 
+  
+  
+If the thing is computationally intensive, then use OpenMP.
+
+# Draw pretty networks with Slurm
+
