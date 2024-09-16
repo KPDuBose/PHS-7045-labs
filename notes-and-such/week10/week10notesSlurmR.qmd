@@ -2,6 +2,10 @@
 title: "Week 10 Notes"
 author: "Kline DuBose"
 format: 
+  html: 
+    code-fold: true
+    embed-resources: true
+    code-summary: "Click me, I'm a code summary!"
   gfm: default
 ---
 
@@ -13,6 +17,8 @@ Further information on the subject can be found [here](https://book-hpc.ggvy.cl/
 
 ```{r}
 #| cache: true
+#| code-fold: true
+
 
 # Model parameters
 nsims <- 1e3
